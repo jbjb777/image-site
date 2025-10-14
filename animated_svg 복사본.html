@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>이미지 미리보기</title>
+  <style>
+    body { text-align:center; margin-top:40px; background:#fafafa; }
+    img { max-width:90%; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.2); }
+  </style>
+</head>
+<body>
+  <h2>🖼️ 이미지 미리보기</h2>
+  <div id="container"></div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const imgUrl = params.get("img");
+
+    if (imgUrl) {
+      document.getElementById("container").innerHTML = `
+        <img src="${imgUrl}" alt="미리보기 이미지"><br>
+        <a href="${imgUrl}" target="_blank">원본 보기</a>
+      `;
+    } else {
+      document.body.innerHTML = "<p>이미지 URL이 없습니다.</p>";
+    }
+  </script>
+</body>
+</html>
