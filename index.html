@@ -1,187 +1,137 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>이미지 업로드</title>
-<!-- 파비콘 -->
-<link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>이미지 업로드 & 미리보기</title>
+
+  <!-- 파비콘 -->
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 2000 2000">
   <defs>
     <linearGradient id="linearGradient1" x1="1576.7" y1="1817" x2="423.3" y2="183" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="%233478f6"/>
-      <stop offset="1" stop-color="%2353b6f9"/>
+      <stop offset="0" stop-color="%233478f6" />
+      <stop offset="1" stop-color="%2353b6f9" />
     </linearGradient>
     <filter id="filter1" x="0" y="0" width="2000" height="2000" color-interpolation-filters="sRGB">
-      <feFlood flood-color="%23000000" flood-opacity="0.52"/>
-      <feComposite in2="SourceGraphic" operator="out"/>
-      <feGaussianBlur stdDeviation="43"/>
-      <feOffset dx="35" dy="24"/>
-      <feComposite in2="SourceGraphic" operator="atop"/>
+      <feFlood flood-color="%23000000" flood-opacity="0.52" />
+      <feComposite in2="SourceGraphic" operator="out" />
+      <feGaussianBlur stdDeviation="43" />
+      <feOffset dx="35" dy="24" />
+      <feComposite in2="SourceGraphic" operator="atop" />
     </filter>
   </defs>
   <path fill="url(%23linearGradient1)" d="M 2000 1000 C 2000 448 1552 0 1000 0 C 448 0 0 448 0 1000 C 0 1552 448 2000 1000 2000 C 1552 2000 2000 1552 2000 1000 Z"/>
   <path fill="%23fff" filter="url(%23filter1)" d="M 1137 506 C 1252 449 1369 497 1427 625 L 1459 696 C 1484 752 1488 821 1471 878 L 1472 877 C 1535 891 1581 939 1608 997 L 1632 1052 C 1698 1199 1657 1324 1544 1381 L 1175 1565 L 972 1114 C 1002 1241 946 1377 834 1433 L 776 1462 C 654 1523 518 1467 449 1343 L 596 1269 C 625 1309 663 1331 708 1308 L 758 1283 C 813 1256 830 1185 802 1124 L 525 509 L 672 435 L 784 683 L 1137 506 Z M 1444 1232 C 1488 1210 1504 1149 1480 1095 L 1476 1085 C 1452 1033 1397 1007 1353 1029 L 1151 1130 L 1242 1333 L 1444 1232 Z M 1184 679 L 991 775 L 1084 981 L 1276 885 C 1319 864 1336 802 1312 749 L 1306 736 C 1283 684 1226 658 1184 679 Z"/>
 </svg>' />
 
-<style>
-  body {
-    margin:0;
-    font-family:sans-serif;
-    background:#121212;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-  }
-
-  .container {
-    background:#1e1e1e;
-    padding:40px;
-    border-radius:16px;
-    box-shadow:0 0 30px rgba(0,0,0,0.6);
-    text-align:center;
-    width:100%;
-    max-width:500px;
-    position:relative;
-  }
-
-  h2 { color:#00ffd5; margin-bottom:20px; }
-
-  input[type="file"] {
-    display:none;
-  }
-
-  #dropArea {
-    border:2px dashed #444;
-    border-radius:12px;
-    padding:20px;
-    cursor:pointer;
-    margin-bottom:15px;
-    transition:border-color 0.3s;
-  }
-
-  #dropArea p { margin:0; color:#aaa; }
-
-  button {
-    background: linear-gradient(135deg,#00ffcc,#3366ff);
-    color:white;
-    padding:12px 24px;
-    margin:10px 0;
-    border:none;
-    border-radius:30px;
-    cursor:pointer;
-    font-size:16px;
-    box-shadow:0 6px 12px rgba(0,255,204,0.3);
-    transition:transform 0.2s, box-shadow 0.3s;
-    width:100%;
-  }
-
-  button:hover {
-    transform:translateY(-2px);
-    box-shadow:0 8px 16px rgba(0,255,204,0.5);
-  }
-
-  #result {
-    margin-top:20px;
-  }
-
-  /* 업로드 중 블러 + 글상자 */
-  #overlay {
-    display: none; /* 페이지 로드 시 숨김 */
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    backdrop-filter: blur(5px);
-    background: rgba(0,0,0,0.3);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    cursor: wait;
-}
-
-  #overlay span {
-    background: linear-gradient(135deg,#00ffcc,#3366ff);
-    color:white;
-    padding:20px 40px;
-    border-radius:16px;
-    font-size:18px;
-    box-shadow:0 8px 16px rgba(0,255,204,0.5);
-  }
-</style>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:#121212; color:white; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+    .container { background:#1e1e1e; padding:30px 20px; border-radius:16px; box-shadow:0 0 30px rgba(0,0,0,0.6); width:100%; max-width:800px; text-align:center; position:relative; }
+    h2 { color:#00ffd5; margin-bottom:20px; font-size:22px; }
+    #dropArea { border:2px dashed #444; border-radius:12px; padding:20px; cursor:pointer; transition:border-color 0.3s; margin-bottom:15px; }
+    #dropArea p { margin:0; color:#aaa; }
+    input[type="file"] { display:none; }
+    button { background:linear-gradient(135deg,#00ffcc,#3366ff); color:#fff; padding:12px 24px; margin:10px 5px; border:none; border-radius:30px; cursor:pointer; font-size:16px; transition:0.3s; }
+    button:hover { transform:translateY(-2px); box-shadow:0 8px 16px rgba(0,255,204,0.3); }
+    #result { margin-top:20px; }
+    #exitBtn { position:absolute; top:15px; left:15px; width:36px; height:36px; border-radius:50%; font-size:20px; line-height:36px; text-align:center; background:linear-gradient(135deg,#00ffcc,#3366ff); color:white; border:none; cursor:pointer; box-shadow:0 8px 16px rgba(0,255,204,0.3); transition:0.3s; z-index:10; }
+    #exitBtn:hover { transform:translateY(-2px); box-shadow:0 8px 16px rgba(0,255,204,0.5); }
+    /* 업로드 중 오버레이 */
+    #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; backdrop-filter:blur(5px); background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999; }
+    #overlay span { background:linear-gradient(135deg,#00ffcc,#3366ff); color:white; padding:20px 30px; border-radius:16px; box-shadow:0 8px 20px rgba(0,255,204,0.5); font-size:18px; }
+  </style>
 </head>
 <body>
-<div class="container">
-  <h2>☁️ 이미지 업로드 & 미리보기 링크 생성</h2>
-  <div id="dropArea">
-    <p>여기에 파일을 드래그하거나 클릭해서 선택</p>
-    <input type="file" id="fileInput" accept="image/*">
+  <div class="container">
+    <button id="exitBtn" title="나가기">×</button>
+
+    <h2>☁️ 이미지 업로드 & 미리보기</h2>
+
+    <!-- 업로드 섹션 -->
+    <div id="uploadSection">
+      <label id="dropArea"><p>파일 선택 또는 드래그</p><input type="file" id="fileInput" accept="image/*"></label>
+      <button id="uploadBtn">업로드</button>
+    </div>
+
+    <!-- 업로드 후 버튼 섹션 -->
+    <div id="afterUploadSection" style="display:none;">
+      <div id="result"></div>
+    </div>
   </div>
-  <button onclick="uploadImage()">업로드</button>
-  <div id="result"></div>
-</div>
 
-<div id="overlay"><span>업로드 중입니다...</span></div>
+  <!-- 업로드 중 오버레이 -->
+  <div id="overlay"><span>업로드 중입니다...</span></div>
 
-<script>
-const overlay = document.getElementById('overlay');
+  <script>
+    const exitBtn = document.getElementById('exitBtn');
+    exitBtn.addEventListener('click',()=>window.location.href='http://jbjb.r-e.kr');
 
-async function uploadImage() {
-  const file = document.getElementById("fileInput").files[0];
-  if(!file) return alert("파일을 선택하세요!");
+    const uploadSection = document.getElementById('uploadSection');
+    const afterUploadSection = document.getElementById('afterUploadSection');
+    const overlay = document.getElementById('overlay');
+    const fileInput = document.getElementById('fileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const resultDiv = document.getElementById('result');
 
-  overlay.style.display='flex';
-  document.body.style.cursor='wait';
+    uploadBtn.addEventListener('click', async ()=>{
+      const file = fileInput.files[0];
+      if(!file){ alert('파일 선택!'); return; }
 
-  const cloudName = "dretlhsrk";
-  const uploadPreset = "unsigned_preset";
-  const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+      // 업로드 시작
+      overlay.style.display='flex';
+      document.body.style.cursor='wait';
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", uploadPreset);
+      const cloudName="dretlhsrk";
+      const uploadPreset="unsigned_preset";
+      const url=`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
-  const res = await fetch(url,{method:"POST", body:formData});
-  const data = await res.json();
+      const formData = new FormData();
+      formData.append('file',file);
+      formData.append('upload_preset',uploadPreset);
 
-  overlay.style.display='none';
-  document.body.style.cursor='default';
+      try{
+        const res = await fetch(url,{method:'POST',body:formData});
+        const data = await res.json();
 
-  if(data.secure_url){
-    const previewLink = `${location.origin}/view.html?img=${encodeURIComponent(data.secure_url)}`;
-    document.getElementById("result").innerHTML = `
-      ✅ 업로드 완료!<br>
-      🔗 <a href="${previewLink}" target="_blank">
-      <button>미리보기 페이지 열기</button></a>
-    `;
-  }else{
-    document.getElementById("result").textContent="업로드 실패!";
-  }
-}
+        // 업로드 끝
+        overlay.style.display='none';
+        document.body.style.cursor='default';
 
-// 드래그 앤 드롭
-const dropArea = document.getElementById('dropArea');
-const fileInput = document.getElementById('fileInput');
+        if(data.secure_url){
+          const previewLink=`${location.origin}/view.html?img=${encodeURIComponent(data.secure_url)}`;
+          resultDiv.innerHTML = `
+            ✅ 업로드 완료!<br>
+            🔗 <a href="${previewLink}" target="_blank">미리보기 페이지 열기</a>
+          `;
+          uploadSection.style.display='none';
+          afterUploadSection.style.display='block';
+        } else {
+          resultDiv.textContent='업로드 실패!';
+        }
+      }catch(e){
+        overlay.style.display='none';
+        document.body.style.cursor='default';
+        alert('업로드 중 오류 발생!');
+      }
+    });
 
-dropArea.addEventListener('click', ()=>fileInput.click());
-dropArea.addEventListener('dragover', e=>{
-  e.preventDefault();
-  dropArea.style.borderColor='#00ffd5';
-});
-dropArea.addEventListener('dragleave', e=>{
-  e.preventDefault();
-  dropArea.style.borderColor='#444';
-});
-dropArea.addEventListener('drop', async e=>{
-  e.preventDefault();
-  dropArea.style.borderColor='#444';
-  const files = e.dataTransfer.files;
-  if(files.length && files[0].type.startsWith('image/')){
-    fileInput.files = files;
-    await uploadImage();
-  } else alert('이미지 파일만 가능합니다!');
-});
-</script>
+    // 드래그앤드롭 이벤트
+    const dropArea = document.getElementById('dropArea');
+    dropArea.addEventListener('click',()=>fileInput.click());
+    dropArea.addEventListener('dragover', e=>{ e.preventDefault(); dropArea.style.borderColor='#00ffd5'; });
+    dropArea.addEventListener('dragleave', e=>{ e.preventDefault(); dropArea.style.borderColor='#444'; });
+    dropArea.addEventListener('drop', async e=>{
+      e.preventDefault();
+      dropArea.style.borderColor='#444';
+      const files = e.dataTransfer.files;
+      if(files.length && files[0].type.startsWith('image/')){
+        fileInput.files = files;
+      } else {
+        alert('이미지 파일만 가능!');
+      }
+    });
+  </script>
 </body>
 </html>
