@@ -2,10 +2,49 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Image Site</title>
+  <title>이미지 업로드</title>
+  <style>
+    body { text-align:center; margin-top:40px; font-family:sans-serif; }
+    button { padding:8px 14px; border:none; border-radius:8px; background:#4CAF50; color:white; }
+    #result { margin-top:20px; }
+  </style>
 </head>
 <body>
-  <h1>성공 🎉</h1>
-  <p>이 페이지가 보이면 GitHub Pages가 정상 작동 중입니다!</p>
+  <h2>☁️ 이미지 업로드 & 미리보기 링크 생성</h2>
+
+  <input type="file" id="fileInput" accept="image/*">
+  <button onclick="uploadImage()">업로드</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function uploadImage() {
+      const file = document.getElementById("fileInput").files[0];
+      if (!file) return alert("파일을 선택하세요!");
+
+      const cloudName = "dretlhsrk";
+      const uploadPreset = "unsigned_preset";
+      const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
+
+      document.getElementById("result").textContent = "업로드 중...";
+
+      const res = await fetch(url, { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (data.secure_url) {
+        const previewLink = `${location.origin}/view.html?img=${encodeURIComponent(data.secure_url)}`;
+        document.getElementById("result").innerHTML = `
+          ✅ 업로드 완료!<br>
+          🔗 <a href="${previewLink}" target="_blank">미리보기 페이지 열기</a>
+        `;
+      } else {
+        document.getElementById("result").textContent = "업로드 실패!";
+      }
+    }
+  </script>
 </body>
 </html>
