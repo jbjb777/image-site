@@ -26,28 +26,24 @@
 </svg>' />
 
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin:0; padding:0; }
+    html, body { width:100%; height:100%; }
     body {
-      margin: 0;
-      padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #121212;
       color: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      transition: filter 0.3s;
     }
     .container {
       background-color: #1e1e1e;
       padding: 30px 20px;
       border-radius: 16px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 30px rgba(0,0,0,0.6);
       text-align: center;
       width: 100%;
       max-width: 600px;
-      margin: 20px;
       position: relative;
     }
     h2 { margin-bottom:20px; color:#00ffd5; }
@@ -56,24 +52,23 @@
       border-radius: 12px;
       padding: 20px;
       cursor: pointer;
-      user-select: none;
-      transition: border-color 0.3s ease;
+      transition: border-color 0.3s;
       margin-bottom: 10px;
     }
-    #dropArea p { margin:0; color:#aaa; }
-    input[type="file"] { display: none; }
-    #previewImg { max-width:90%; border-radius:12px; margin:10px 0; display:none; }
+    #dropArea p { color:#aaa; }
+    input[type="file"] { display:none; }
+    #previewImg { max-width:100%; border-radius:12px; margin:10px 0; display:none; }
     button {
       background: linear-gradient(135deg,#00ffcc,#3366ff);
       color:#fff;
       padding:12px 24px;
-      margin:10px 5px;
+      margin:10px 0;
       border:none;
       border-radius:30px;
       cursor:pointer;
       font-size:16px;
-      transition: transform 0.2s ease, box-shadow 0.3s;
       width:100%;
+      transition: transform 0.2s, box-shadow 0.3s;
     }
     button:hover {
       transform: translateY(-2px);
@@ -86,27 +81,23 @@
       box-shadow:0 8px 16px rgba(0,255,204,0.3); transition:transform 0.2s ease, box-shadow 0.3s; z-index:10;
     }
     #exitBtn:hover { transform:translateY(-2px); box-shadow:0 8px 16px rgba(0,255,204,0.5); }
+
     #loadingOverlay {
       display:none;
-      position:fixed;
-      top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.3);
-      backdrop-filter:blur(4px);
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.3); backdrop-filter:blur(4px);
       z-index:100;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      color:#fff;
-      font-size:20px;
-      font-weight:bold;
-      border-radius:16px;
+      display:flex; justify-content:center; align-items:center;
+      font-size:20px; font-weight:bold;
+      color:#fff; text-align:center;
     }
+
     #resultSection { display:none; margin-top:20px; }
   </style>
 </head>
+
 <body>
   <div class="container">
-
     <button id="exitBtn" title="나가기">×</button>
     <h2>☁️ 이미지 업로드 & 미리보기</h2>
 
@@ -138,6 +129,11 @@
     const loadingOverlay = document.getElementById('loadingOverlay');
     const copyLinkBtn = document.getElementById('copyLinkBtn');
 
+    // 페이지 로딩 시 로딩 화면 숨김 보장
+    window.addEventListener('load', ()=> {
+      loadingOverlay.style.display='none';
+    });
+
     // 이미지 미리보기
     fileInput.addEventListener('change', () => {
       const file = fileInput.files[0];
@@ -150,17 +146,17 @@
       reader.readAsDataURL(file);
     });
 
+    dropArea.addEventListener('click', () => fileInput.click());
     dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.borderColor='#00ffd5'; });
     dropArea.addEventListener('dragleave', e => { e.preventDefault(); dropArea.style.borderColor='#444'; });
     dropArea.addEventListener('drop', e => {
-      e.preventDefault();
-      dropArea.style.borderColor='#444';
+      e.preventDefault(); dropArea.style.borderColor='#444';
       fileInput.files = e.dataTransfer.files;
       const file = fileInput.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = e => {
-        previewImg.src = e.target.result;
+      reader.onload = ev => {
+        previewImg.src = ev.target.result;
         previewImg.style.display = 'block';
       };
       reader.readAsDataURL(file);
@@ -170,7 +166,7 @@
     uploadBtn.addEventListener('click', async () => {
       const file = fileInput.files[0];
       if (!file) return alert("파일 선택하세요!");
-      
+
       // 로딩 화면 표시
       loadingOverlay.style.display='flex';
       document.body.style.cursor='wait';
@@ -197,9 +193,7 @@
             navigator.clipboard.writeText(data.secure_url);
             window.open(data.secure_url,'_blank');
           };
-        } else {
-          throw new Error('업로드 실패');
-        }
+        } else throw new Error('업로드 실패');
       } catch(e) {
         loadingOverlay.style.display='none';
         document.body.style.cursor='default';
