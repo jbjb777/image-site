@@ -1,183 +1,211 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>이미지 업로드 & 미리보기</title>
-<link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>이미지 업로드 & 미리보기</title>
+
+  <!-- 파비콘 -->
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 2000 2000">
   <defs>
     <linearGradient id="linearGradient1" x1="1576.7" y1="1817" x2="423.3" y2="183" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="%233478f6"/>
-      <stop offset="1" stop-color="%2353b6f9"/>
+      <stop offset="0" stop-color="%233478f6" />
+      <stop offset="1" stop-color="%2353b6f9" />
     </linearGradient>
     <filter id="filter1" x="0" y="0" width="2000" height="2000" color-interpolation-filters="sRGB">
-      <feFlood flood-color="%23000000" flood-opacity="0.52"/>
-      <feComposite in2="SourceGraphic" operator="out"/>
-      <feGaussianBlur stdDeviation="43"/>
-      <feOffset dx="35" dy="24"/>
-      <feComposite in2="SourceGraphic" operator="atop"/>
+      <feFlood flood-color="%23000000" flood-opacity="0.52" />
+      <feComposite in2="SourceGraphic" operator="out" />
+      <feGaussianBlur stdDeviation="43" />
+      <feOffset dx="35" dy="24" />
+      <feComposite in2="SourceGraphic" operator="atop" />
     </filter>
   </defs>
   <path fill="url(%23linearGradient1)" d="M 2000 1000 C 2000 448 1552 0 1000 0 C 448 0 0 448 0 1000 C 0 1552 448 2000 1000 2000 C 1552 2000 2000 1552 2000 1000 Z"/>
   <path fill="%23fff" filter="url(%23filter1)" d="M 1137 506 C 1252 449 1369 497 1427 625 L 1459 696 C 1484 752 1488 821 1471 878 L 1472 877 C 1535 891 1581 939 1608 997 L 1632 1052 C 1698 1199 1657 1324 1544 1381 L 1175 1565 L 972 1114 C 1002 1241 946 1377 834 1433 L 776 1462 C 654 1523 518 1467 449 1343 L 596 1269 C 625 1309 663 1331 708 1308 L 758 1283 C 813 1256 830 1185 802 1124 L 525 509 L 672 435 L 784 683 L 1137 506 Z M 1444 1232 C 1488 1210 1504 1149 1480 1095 L 1476 1085 C 1452 1033 1397 1007 1353 1029 L 1151 1130 L 1242 1333 L 1444 1232 Z M 1184 679 L 991 775 L 1084 981 L 1276 885 C 1319 864 1336 802 1312 749 L 1306 736 C 1283 684 1226 658 1184 679 Z"/>
 </svg>' />
-<style>
-body {
-  margin:0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background:#121212;
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-}
 
-.container {
-  background-color: #1e1e1e;
-  padding: 30px 20px;
-  border-radius:16px;
-  box-shadow:0 0 30px rgba(0,0,0,0.6);
-  text-align:center;
-  width:100%;
-  max-width:600px;
-  animation:fadeIn 0.8s ease-out;
-  position:relative;
-}
-
-h2 {margin-bottom:20px; font-size:22px; color:#00ffd5;}
-
-#exitBtn {
-  position:absolute;
-  top:15px; left:15px;
-  width:36px; height:36px;
-  border-radius:50%;
-  font-size:20px; line-height:36px; text-align:center;
-  background:linear-gradient(135deg,#00ffcc,#3366ff);
-  color:white; border:none; cursor:pointer;
-  box-shadow:0 8px 16px rgba(0,255,204,0.3);
-  transition: transform 0.2s ease, box-shadow 0.3s;
-  z-index:10;
-}
-#exitBtn:hover {transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,255,204,0.5);}
-
-#uploadSection input[type="file"] {display:none;}
-#uploadSection #dropArea {
-  border:2px dashed #444; border-radius:12px; padding:20px; cursor:pointer;
-  transition:border-color 0.3s; margin-bottom:15px;
-}
-#uploadSection #dropArea p {margin:0; color:#aaa;}
-#uploadSection button {
-  background:linear-gradient(135deg,#00ffcc,#3366ff);
-  color:#fff; padding:12px 24px; border:none; border-radius:30px;
-  cursor:pointer; font-size:16px; box-shadow:0 8px 16px rgba(0,255,204,0.3);
-  transition:transform 0.2s ease, box-shadow 0.3s;
-}
-#uploadSection button:hover {transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,255,204,0.5);}
-
-#afterUploadSection {display:none;}
-#afterUploadSection button#copyLinkBtn {
-  margin-top:15px;
-  background:linear-gradient(135deg,#00ffcc,#3366ff);
-  color:#fff; padding:12px 24px; border:none; border-radius:30px;
-  cursor:pointer; font-size:16px;
-  box-shadow:0 8px 16px rgba(0,255,204,0.3);
-  transition: transform 0.2s ease, box-shadow 0.3s;
-}
-#afterUploadSection button#copyLinkBtn:hover {
-  transform:translateY(-2px);
-  box-shadow:0 8px 20px rgba(0,255,204,0.5);
-}
-
-#overlay {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.4); backdrop-filter:blur(4px);
-  display:none; justify-content:center; align-items:center;
-  z-index:9999;
-}
-#overlay span {
-  background: linear-gradient(135deg,#00ffcc,#3366ff);
-  padding:20px 30px; border-radius:16px;
-  box-shadow:0 8px 20px rgba(0,255,204,0.5);
-  font-size:18px; text-align:center;
-}
-
-@keyframes fadeIn {from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);}}
-</style>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: filter 0.3s;
+    }
+    .container {
+      background-color: #1e1e1e;
+      padding: 30px 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      margin: 20px;
+      position: relative;
+    }
+    h2 { margin-bottom:20px; color:#00ffd5; }
+    #dropArea {
+      border: 2px dashed #444;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.3s ease;
+      margin-bottom: 10px;
+    }
+    #dropArea p { margin:0; color:#aaa; }
+    input[type="file"] { display: none; }
+    #previewImg { max-width:90%; border-radius:12px; margin:10px 0; display:none; }
+    button {
+      background: linear-gradient(135deg,#00ffcc,#3366ff);
+      color:#fff;
+      padding:12px 24px;
+      margin:10px 5px;
+      border:none;
+      border-radius:30px;
+      cursor:pointer;
+      font-size:16px;
+      transition: transform 0.2s ease, box-shadow 0.3s;
+      width:100%;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow:0 8px 16px rgba(0,255,204,0.3);
+    }
+    #exitBtn {
+      position:absolute; top:15px; left:15px; width:36px; height:36px;
+      border-radius:50%; font-size:20px; line-height:36px; text-align:center;
+      background:linear-gradient(135deg,#00ffcc,#3366ff); color:white; border:none; cursor:pointer;
+      box-shadow:0 8px 16px rgba(0,255,204,0.3); transition:transform 0.2s ease, box-shadow 0.3s; z-index:10;
+    }
+    #exitBtn:hover { transform:translateY(-2px); box-shadow:0 8px 16px rgba(0,255,204,0.5); }
+    #loadingOverlay {
+      display:none;
+      position:fixed;
+      top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.3);
+      backdrop-filter:blur(4px);
+      z-index:100;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      color:#fff;
+      font-size:20px;
+      font-weight:bold;
+      border-radius:16px;
+    }
+    #resultSection { display:none; margin-top:20px; }
+  </style>
 </head>
 <body>
-<div id="overlay"><span>업로드 중입니다...</span></div>
+  <div class="container">
 
-<div class="container">
-  <button id="exitBtn" title="나가기">×</button>
+    <button id="exitBtn" title="나가기">×</button>
+    <h2>☁️ 이미지 업로드 & 미리보기</h2>
 
-  <h2>☁️ 이미지 업로드 & 미리보기 링크</h2>
-
-  <div id="uploadSection">
-    <div id="dropArea"><p>여기에 이미지 드래그 또는 클릭</p>
-      <input type="file" id="fileInput" accept="image/*">
+    <div id="uploadSection">
+      <div id="dropArea">
+        <p>여기에 이미지 드래그 또는 클릭</p>
+        <input type="file" id="fileInput" accept="image/*">
+      </div>
+      <img id="previewImg" alt="선택 이미지 미리보기">
+      <button id="uploadBtn">업로드</button>
     </div>
-    <button id="uploadBtn">업로드</button>
+
+    <div id="resultSection">
+      <button id="copyLinkBtn">링크 복사 & 미리보기 열기</button>
+    </div>
+
+    <div id="loadingOverlay">업로드 중입니다...</div>
   </div>
 
-  <div id="afterUploadSection">
-    <div id="result"></div>
-    <button id="copyLinkBtn">링크 복사</button>
-  </div>
-</div>
+  <script>
+    const exitBtn = document.getElementById('exitBtn');
+    exitBtn.onclick = () => window.location.href = 'http://jbjb.r-e.kr';
 
-<script>
-const exitBtn = document.getElementById('exitBtn');
-exitBtn.addEventListener('click',()=>{window.location.href='http://jbjb.r-e.kr';});
+    const fileInput = document.getElementById('fileInput');
+    const dropArea = document.getElementById('dropArea');
+    const previewImg = document.getElementById('previewImg');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const resultSection = document.getElementById('resultSection');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const copyLinkBtn = document.getElementById('copyLinkBtn');
 
-const overlay = document.getElementById('overlay');
-const uploadSection = document.getElementById('uploadSection');
-const afterUploadSection = document.getElementById('afterUploadSection');
-const uploadBtn = document.getElementById('uploadBtn');
-const fileInput = document.getElementById('fileInput');
-const resultDiv = document.getElementById('result');
-const copyLinkBtn = document.getElementById('copyLinkBtn');
-const dropArea = document.getElementById('dropArea');
+    // 이미지 미리보기
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        previewImg.src = e.target.result;
+        previewImg.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    });
 
-dropArea.addEventListener('click',()=>fileInput.click());
+    dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.borderColor='#00ffd5'; });
+    dropArea.addEventListener('dragleave', e => { e.preventDefault(); dropArea.style.borderColor='#444'; });
+    dropArea.addEventListener('drop', e => {
+      e.preventDefault();
+      dropArea.style.borderColor='#444';
+      fileInput.files = e.dataTransfer.files;
+      const file = fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        previewImg.src = e.target.result;
+        previewImg.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    });
 
-dropArea.addEventListener('dragover',(e)=>{e.preventDefault(); dropArea.style.borderColor='#00ffd5';});
-dropArea.addEventListener('dragleave',(e)=>{e.preventDefault(); dropArea.style.borderColor='#444';});
-dropArea.addEventListener('drop', async(e)=>{e.preventDefault(); dropArea.style.borderColor='#444'; fileInput.files=e.dataTransfer.files;});
+    // 업로드 버튼 클릭
+    uploadBtn.addEventListener('click', async () => {
+      const file = fileInput.files[0];
+      if (!file) return alert("파일 선택하세요!");
+      
+      // 로딩 화면 표시
+      loadingOverlay.style.display='flex';
+      document.body.style.cursor='wait';
 
-uploadBtn.addEventListener('click', async()=>{
-  const file=fileInput.files[0];
-  if(!file) return alert('파일을 선택하세요!');
-  overlay.style.display='flex';
-  document.body.style.cursor='wait';
+      const cloudName = "dretlhsrk";
+      const uploadPreset = "unsigned_preset";
+      const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
-  const cloudName="dretlhsrk";
-  const uploadPreset="unsigned_preset";
-  const url=`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-  const formData=new FormData();
-  formData.append('file',file);
-  formData.append('upload_preset',uploadPreset);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
 
-  try{
-    const res=await fetch(url,{method:'POST',body:formData});
-    const data=await res.json();
-    if(data.secure_url){
-      const previewLink=`${location.origin}/view.html?img=${encodeURIComponent(data.secure_url)}`;
-      resultDiv.innerHTML=`✅ 업로드 완료!<br>🔗 <a href="${previewLink}" target="_blank">미리보기 페이지 열기</a>`;
-      uploadSection.style.display='none';
-      afterUploadSection.style.display='block';
-    }else{alert('업로드 실패!');}
-  }catch(err){alert('업로드 오류!');}
-  overlay.style.display='none';
-  document.body.style.cursor='default';
-});
+      try {
+        const res = await fetch(url, { method:'POST', body:formData });
+        const data = await res.json();
+        if (data.secure_url) {
+          // 업로드 완료
+          loadingOverlay.style.display='none';
+          document.body.style.cursor='default';
+          document.getElementById('uploadSection').style.display='none';
+          resultSection.style.display='block';
 
-copyLinkBtn.addEventListener('click',()=>{
-  const link = resultDiv.querySelector('a')?.href;
-  if(!link) return;
-  navigator.clipboard.writeText(link).then(()=>{alert('미리보기 링크가 복사되었습니다!');});
-});
-</script>
+          copyLinkBtn.onclick = () => {
+            navigator.clipboard.writeText(data.secure_url);
+            window.open(data.secure_url,'_blank');
+          };
+        } else {
+          throw new Error('업로드 실패');
+        }
+      } catch(e) {
+        loadingOverlay.style.display='none';
+        document.body.style.cursor='default';
+        alert('업로드 실패');
+      }
+    });
+  </script>
 </body>
 </html>
