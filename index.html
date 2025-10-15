@@ -1,156 +1,128 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>이미지 업로드 & 미리보기</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      margin: 40px;
-      transition: filter 0.3s ease;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이미지 미리보기</title>
+<style>
+  body {
+    margin:0;
+    font-family: sans-serif;
+    background:#121212;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    text-align:center;
+  }
 
-    /* 나가기 버튼 */
-    #exitBtn {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      font-size: 20px;
-      line-height: 36px;
-      text-align: center;
-      background: linear-gradient(135deg,#00ffcc,#3366ff);
-      color: white;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 8px 16px rgba(0,255,204,0.3);
-      transition: transform 0.2s, box-shadow 0.3s;
-      z-index: 1000;
-    }
-    #exitBtn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(0,255,204,0.5);
-    }
+  /* 나가기 버튼 */
+  #exitBtn {
+    position:absolute;
+    top:15px;
+    left:15px;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    font-size:20px;
+    line-height:36px;
+    text-align:center;
+    background: linear-gradient(135deg,#00ffcc,#3366ff);
+    color:white;
+    border:none;
+    cursor:pointer;
+    box-shadow:0 8px 16px rgba(0,255,204,0.3);
+    transition: transform 0.2s, box-shadow 0.3s;
+    z-index:1000;
+  }
+  #exitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow:0 8px 16px rgba(0,255,204,0.5);
+  }
 
-    h2 { color:#00ffd5; }
+  #container {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    background:#1e1e1e;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 0 30px rgba(0,0,0,0.6);
+    max-width:90%;
+  }
 
-    input[type="file"] {
-      margin-top:20px;
-    }
+  img {
+    max-width:90vw;
+    max-height:70vh;
+    border-radius:12px;
+    box-shadow:0 8px 16px rgba(0,255,204,0.3);
+  }
 
-    button.uploadBtn, button.copyBtn {
-      margin-top:15px;
-      padding:10px 20px;
-      font-size:16px;
-      border:none;
-      border-radius: 12px;
-      cursor:pointer;
-      background: linear-gradient(135deg,#00ffcc,#3366ff);
-      color:white;
-      box-shadow:0 6px 12px rgba(0,255,204,0.3);
-      transition: transform 0.2s, box-shadow 0.3s;
-    }
-    button.uploadBtn:hover, button.copyBtn:hover {
-      transform: translateY(-2px);
-      box-shadow:0 8px 16px rgba(0,255,204,0.5);
-    }
+  button.copyBtn {
+    margin-top:15px;
+    padding:10px 20px;
+    font-size:16px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    background: linear-gradient(135deg,#00ffcc,#3366ff);
+    color:white;
+    box-shadow:0 6px 12px rgba(0,255,204,0.3);
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+  button.copyBtn:hover {
+    transform: translateY(-2px);
+    box-shadow:0 8px 16px rgba(0,255,204,0.5);
+  }
 
-    #result {
-      margin-top:20px;
-    }
-
-    /* 업로드 중 블러 + 중앙 글상자 */
-    #overlay {
-      display: none; /* 초기 숨김 */
-      position: fixed;
-      top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(5px);
-      z-index:999;
-      justify-content: center;
-      align-items: center;
-    }
-    #overlay div {
-      background: linear-gradient(135deg,#00ffcc,#3366ff);
-      padding: 30px 50px;
-      border-radius: 16px;
-      box-shadow: 0 8px 16px rgba(0,255,204,0.5);
-      font-size: 22px;
-      font-weight: bold;
-      color:white;
-    }
-  </style>
+  a.originalLink {
+    margin-top:10px;
+    color:#00ffd5;
+    text-decoration:none;
+  }
+  a.originalLink:hover {
+    text-decoration:underline;
+  }
+</style>
 </head>
 <body>
-  <button id="exitBtn" title="나가기">×</button>
+<button id="exitBtn" title="나가기">×</button>
+<div id="container">
+  <h2>🖼️ 이미지 미리보기</h2>
+  <div id="imageContainer"></div>
+  <button class="copyBtn" id="copyBtn" style="display:none;">🔗 링크 복사</button>
+  <a id="originalLink" class="originalLink" href="#" target="_blank" style="display:none;">원본 이미지 보기</a>
+</div>
 
-  <h2>☁️ 이미지 업로드 & 미리보기 링크 생성</h2>
+<script>
+const exitBtn = document.getElementById('exitBtn');
+exitBtn.addEventListener('click', ()=>{ window.location.href="http://jbjb.r-e.kr"; });
 
-  <input type="file" id="fileInput" accept="image/*">
-  <br>
-  <button class="uploadBtn" onclick="uploadImage()">업로드</button>
-  <div id="result"></div>
+const params = new URLSearchParams(location.search);
+const imgUrl = params.get("img");
 
-  <!-- 업로드 중 overlay -->
-  <div id="overlay"><div>업로드 중입니다...</div></div>
+const imgContainer = document.getElementById('imageContainer');
+const copyBtn = document.getElementById('copyBtn');
+const originalLink = document.getElementById('originalLink');
 
-  <script>
-    const exitBtn = document.getElementById('exitBtn');
-    exitBtn.addEventListener('click', ()=> {
-      window.location.href = "http://jbjb.r-e.kr";
+if(imgUrl){
+  const img = document.createElement('img');
+  img.src = imgUrl;
+  imgContainer.appendChild(img);
+
+  copyBtn.style.display = 'inline-block';
+  originalLink.style.display = 'inline-block';
+  originalLink.href = imgUrl;
+
+  copyBtn.addEventListener('click', ()=>{
+    navigator.clipboard.writeText(window.location.href).then(()=>{
+      alert('미리보기 링크가 복사되었습니다!\n'+window.location.href);
     });
-
-    const overlay = document.getElementById('overlay');
-    const result = document.getElementById('result');
-
-    async function uploadImage() {
-      const file = document.getElementById("fileInput").files[0];
-      if(!file) return alert("파일을 선택하세요!");
-
-      // 업로드 시작
-      overlay.style.display = 'flex';
-      document.body.style.cursor = 'progress';
-
-      const cloudName = "dretlhsrk";
-      const uploadPreset = "unsigned_preset";
-      const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", uploadPreset);
-
-      try {
-        const res = await fetch(url, { method:'POST', body:formData });
-        const data = await res.json();
-
-        if(data.secure_url){
-          const previewLink = `${location.origin}/view.html?img=${encodeURIComponent(data.secure_url)}`;
-
-          result.innerHTML = `
-            ✅ 업로드 완료!<br>
-            <button class="copyBtn" onclick="copyLink('${previewLink}')">🔗 미리보기 링크 복사</button>
-          `;
-        } else {
-          result.textContent = "업로드 실패!";
-        }
-      } catch(e){
-        result.textContent = "업로드 실패!";
-      } finally {
-        // 업로드 끝
-        overlay.style.display = 'none';
-        document.body.style.cursor = 'default';
-      }
-    }
-
-    function copyLink(link){
-      navigator.clipboard.writeText(link).then(()=>{
-        alert('링크가 복사되었습니다!\n' + link);
-      });
-    }
-  </script>
+  });
+}else{
+  imgContainer.innerHTML = "<p>이미지 URL이 없습니다.</p>";
+}
+</script>
 </body>
 </html>
