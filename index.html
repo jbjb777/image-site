@@ -24,14 +24,31 @@
 </svg>' />
 
 <style>
+
+   #exitBtn {
+    position:absolute;
+    top:15px;
+    left:15px;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    font-size:20px;
+    line-height:36px;
+    text-align:center;
+    background: linear-gradient(135deg,#00ffcc,#3366ff);
+    color:white;
+    border:none;
+    cursor:pointer;
+    box-shadow:0 8px 16px rgba(0,255,204,0.3);
+    transition: transform 0.2s, box-shadow 0.3s;
+    z-index:1000;
+  }
   * { box-sizing: border-box; }
   body { margin:0; padding:0; font-family: 'Segoe UI', sans-serif; background:#121212; color:#fff; display:flex; justify-content:center; align-items:center; min-height:100vh; }
   .container { background:#1e1e1e; padding:30px 20px; border-radius:16px; box-shadow:0 0 30px rgba(0,0,0,0.6); text-align:center; width:90%; max-width:600px; position:relative; }
   h2 { margin-bottom:20px; font-size:22px; color:#00ffd5; }
 
-  /* 나가기 버튼 */
-  #exitBtn { position:absolute; top:15px; left:15px; width:40px; height:40px; border-radius:50%; font-size:24px; line-height:40px; text-align:center; background:linear-gradient(135deg,#00ffcc,#3366ff); color:white; border:none; cursor:pointer; box-shadow:0 8px 16px rgba(0,255,204,0.3); }
-  #exitBtn:hover { transform:translateY(-2px); box-shadow:0 8px 16px rgba(0,255,204,0.5); }
+  
 
   #uploadSection input[type="file"] { display:none; }
   #dropArea { border:2px dashed #444; border-radius:12px; padding:20px; cursor:pointer; margin-bottom:15px; }
@@ -70,6 +87,12 @@
   #linkDisplay { flex:1; border:2px dashed #555; border-radius:8px; padding:8px 12px; background:transparent; color:#fff; font-size:14px; overflow-x:auto; }
   #copyBtn { width:60px; height:40px; padding:0; border-radius:12px; font-size:14px; box-shadow:0 8px 16px rgba(0,255,204,0.3); background:linear-gradient(135deg,#00ffcc,#3366ff); color:#fff; cursor:pointer; }
   #copyBtn:hover { transform:translateY(-2px); box-shadow:0 8px 16px rgba(0,255,204,0.5); }
+
+  #exitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow:0 8px 16px rgba(0,255,204,0.5);
+  }
+
 </style>
 </head>
 <body>
@@ -95,10 +118,13 @@
 </div>
 
 <div id="loadingOverlay"><span>업로드 중...</span></div>
-
+<button id="exitBtn" title="나가기">×</button>
 <script>
-const exitBtn=document.getElementById('exitBtn');
-exitBtn.onclick=()=>window.location.href='http://jbjb.r-e.kr';
+
+  
+const exitBtn = document.getElementById('exitBtn');
+exitBtn.addEventListener('click', ()=>{ window.location.href="http://jbjb.r-e.kr"; });
+
 
 const dropArea=document.getElementById('dropArea');
 const fileInput=document.getElementById('fileInput');
