@@ -48,13 +48,12 @@
     position:fixed;
     top:0; left:0;
     width:100%; height:100%;
-
     backdrop-filter: blur(5px);
     display:none;
     justify-content:center;
     align-items:center;
     z-index:1000;
-    cursor:wait; /* 마우스 로딩 */
+    cursor:wait;
   }
   #loadingOverlay span {
     color:#fff;
@@ -148,7 +147,20 @@ uploadBtn.addEventListener('click',async()=>{
       const previewUrl=`${location.origin}/view.html?img=${encodeURIComponent(data.secure_url)}`;
 
       linkDisplay.value = previewUrl;
-      copyBtn.onclick = ()=>{ navigator.clipboard.writeText(previewUrl); alert('링크 복사됨'); };
+
+      // ✅ 복사 버튼: 클릭 시 ✔ 표시로 변경
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(previewUrl).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = "✔";
+          copyBtn.style.background = "linear-gradient(135deg,#00cc88,#33ff99)";
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.style.background = "linear-gradient(135deg,#00ffcc,#3366ff)";
+          }, 1500);
+        });
+      };
+
       openPreviewBtn.onclick = ()=>window.open(previewUrl,'_blank');
 
       loadingOverlay.style.display='none';
